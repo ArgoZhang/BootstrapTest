@@ -11,9 +11,29 @@ namespace BootstrapTest.Server.Data
     /// <summary>
     ///
     /// </summary>
+    public enum EnumEducation
+    {
+        /// <summary>
+        ///
+        /// </summary>
+        [Display(Name = "小学")]
+        Primary,
+
+        /// <summary>
+        ///
+        /// </summary>
+        [Display(Name = "中学")]
+        Middel
+    }
+
+    /// <summary>
+    ///
+    /// </summary>
     public class Foo
     {
         // 列头信息支持 Display DisplayName 两种标签
+
+        private static readonly Random random = new();
 
         /// <summary>
         ///
@@ -26,7 +46,7 @@ namespace BootstrapTest.Server.Data
         ///
         /// </summary>
         [Required(ErrorMessage = "{0}不能为空")]
-        [AutoGenerateColumn(Order = 10, Filterable = true, Searchable = true)]
+        [AutoGenerateColumn(Order = 10, Filterable = true, Searchable = true, Sortable = true)]
         [Display(Name = "姓名")]
         public string? Name { get; set; }
 
@@ -76,10 +96,8 @@ namespace BootstrapTest.Server.Data
         [AutoGenerateColumn(Order = 70)]
         public IEnumerable<string> Hobby { get; set; } = new List<string>();
 
-        private static readonly Random random = new();
-
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="localizer"></param>
         /// <returns></returns>
@@ -95,7 +113,7 @@ namespace BootstrapTest.Server.Data
         };
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns></returns>
         public static List<Foo> GenerateFoo(IStringLocalizer<Foo> localizer, int count = 80) => Enumerable.Range(1, count).Select(i => new Foo()
@@ -110,27 +128,9 @@ namespace BootstrapTest.Server.Data
         }).ToList();
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns></returns>
         public static IEnumerable<SelectedItem> GenerateHobbys(IStringLocalizer<Foo> localizer) => localizer["Hobbys"].Value.Split(",").Select(i => new SelectedItem(i, i)).ToList();
-    }
-
-    /// <summary>
-    ///
-    /// </summary>
-    public enum EnumEducation
-    {
-        /// <summary>
-        ///
-        /// </summary>
-        [Display(Name = "小学")]
-        Primary,
-
-        /// <summary>
-        ///
-        /// </summary>
-        [Display(Name = "中学")]
-        Middel
     }
 }

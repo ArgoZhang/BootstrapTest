@@ -45,6 +45,7 @@ namespace BootstrapTest.Server.Components.Shared
                 new() { Text = "Table", Icon = "fa-solid fa-fw fa-table", Url = "/table" },
                 new() { Text = "花名册", Icon = "fa-solid fa-fw fa-users", Url = "/users" },
                 new() { Text = "Flags", Icon = "fa-solid fa-fw fa-users", Url = "/flags" },
+                new() { Text = "表单测试", Icon = "fa-solid fa-fw fa-users", Url = "/tabletest" },
             };
 
             return menus;

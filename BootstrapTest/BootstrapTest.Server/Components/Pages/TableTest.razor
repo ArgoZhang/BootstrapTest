@@ -1,0 +1,162 @@
+﻿@page "/tabletest"
+
+
+<Table AutoGenerateColumns TItem="Order" OnQueryAsync="OnQueryAsync">
+    <TableColumns >
+        <TableColumn @bind-Field=context.Summary Sortable  >
+            <Template Context="item" >
+                @item.Value.Category
+            </Template>
+            <FilterTemplate >
+                <CustomerFilter />
+            </FilterTemplate>
+        </TableColumn>
+    </TableColumns>
+</Table>
+
+@code
+{
+    private Task<QueryData<Order>> OnQueryAsync(QueryPageOptions options)
+    {
+
+        var list = new List<Order>()
+        {
+            new Order()
+            {
+                Number=2,
+                Notes="B",
+
+                Summary=new Summary(){Category=SummaryCategory.Low}
+
+            },
+            new Order()
+            {
+                Number=2,
+             Notes="A",
+                Summary=new Summary(){Category=SummaryCategory.High}
+
+            },
+            new Order()
+            {
+                Number=1,
+               Notes="F",
+                Summary=new Summary(){Category=SummaryCategory.Middle}
+
+            },
+            new Order()
+            {
+                Notes="C",
+                Number=4,
+                Summary=new Summary(){Category=SummaryCategory.Low}
+
+            },
+            new Order()
+            {
+
+                Number=6,
+                 Notes="A",
+                Summary=new Summary(){Category=SummaryCategory.High}
+
+            },
+        };
+
+
+
+        var sorted = false;
+        if (!string.IsNullOrEmpty(options.SortName))
+        {
+            list = list.Sort(options.SortName, options.SortOrder).ToList();
+            sorted = true;
+        }
+
+        return Task.FromResult(new QueryData<Order>()
+            {
+                Items = list,
+                TotalCount = list.Count,
+                IsSorted = sorted,
+                IsFiltered=true,
+
+            });
+    }
+
+    List<Order> _orders = new List<Order>()
+    {
+        new Order()
+        {
+            Number=2,
+            Notes="B",
+
+            Summary=new Summary(){Category=SummaryCategory.Low}
+
+        },
+        new Order()
+        {
+            Number=2,
+         Notes="A",
+            Summary=new Summary(){Category=SummaryCategory.High}
+
+        },
+        new Order()
+        {
+            Number=1,
+           Notes="F",
+            Summary=new Summary(){Category=SummaryCategory.Middle}
+
+        },
+        new Order()
+        {
+            Notes="C",
+            Number=4,
+            Summary=new Summary(){Category=SummaryCategory.Low}
+
+        },
+        new Order()
+        {
+
+            Number=6,
+             Notes="A",
+            Summary=new Summary(){Category=SummaryCategory.High}
+
+        },
+    };
+
+    public class Order
+    {
+        [AutoGenerateColumn(Ignore =true)]
+        public int Id { get; set; }
+
+        [AutoGenerateColumn(Order =10, Text = "编码",Sortable =true,Width =100)]
+        public int Number { get; set; }
+
+        [AutoGenerateColumn(Text = "概要")]
+        public Summary  Summary { get; set; }
+
+        [AutoGenerateColumn(Order = 20, Text = "备注", Sortable = true)]
+        public string Notes { get; set; }
+    }
+
+
+    public enum SummaryCategory
+    {
+        [Description("低")]
+        Low,
+        [Description("高")]
+        Middle,
+        [Description("高")]
+        High
+    }
+
+    public class Summary : IComparable<Summary>
+    {
+        [AutoGenerateColumn(Ignore = true)]
+        public int Id { get; set; }
+        [AutoGenerateColumn(Text = "分类")]
+        public SummaryCategory  Category { get; set; }
+
+        public int CompareTo(Summary other)
+        {
+            return Category.CompareTo(other.Category);
+        }
+    }
+
+}
