@@ -1,0 +1,65 @@
+﻿@page "/flags"
+
+
+<EditorForm
+    Model="_part" ItemsPerRow="1" >
+    <FieldItems >
+        <EditorItem @bind-Field=@context.Standard >
+            <EditTemplate Context="other" >
+                <MultiSelect  @bind-Value=_selectedItems  ShowToolbar />
+            </EditTemplate>
+        </EditorItem>
+    </FieldItems>
+</EditorForm>
+
+
+
+@code
+{
+    List<Standard> _selectedItems = new List<Standard>();
+
+    Part _part = new Part() { Name = "XXXX",Types=new List<string>() { "A", "B", "C", "D" } };
+
+
+    [Flags]
+    public enum Standard
+    {
+        [Description("未设置")]
+        Unset=0,
+        [Description("低")]
+        Low=1<<0,
+        [Description("普通")]
+        Normal=1<<1,
+        [Description("中")]
+        Hight = 1 << 2,
+        [Description("特殊")]
+        Special = 1 << 3,
+
+    }
+
+    List<Standard> _standards = new List<Standard>
+    {
+        Standard.Unset,
+        Standard.Low,
+        Standard.Normal,
+        Standard.Hight,
+
+    };
+
+    public class Part
+    {
+        [AutoGenerateColumn(Ignore = true)]
+        public int Id { get; set; }
+
+       
+        [AutoGenerateColumn(Order = 1,Text ="名称")]
+        public string Name { get; set; }
+
+        
+        [AutoGenerateColumn(Order =2,Text ="标准")]
+        public Standard  Standard { get; set; }
+
+        [AutoGenerateColumn(Order = 3, Text = "类型")]
+        public List<string> Types { get; set; }
+    }
+}
