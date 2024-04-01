@@ -1,21 +1,67 @@
 ﻿@page "/tabletest"
+@inject MessageService _MessageService
+
+<Stack >
+    <StackItem >
+        <Table AutoGenerateColumns TItem="Order" OnQueryAsync="OnQueryAsync" ShowToolbar EditDialogItemsPerRow="1">
+            <TableColumns>
+                <TableColumn @bind-Field=context.Categories Text="分类">
+                    <EditTemplate Context="item">
+                        <div class="col-12" >
+
+                        <MultiSelect DisplayText="分类" @bind-Value=context.Categories />
+                        </div>
+                    </EditTemplate>
+                    <Template Context="item" >
+                        @string.Join(',',context.Categories)
+                    </Template>
+                </TableColumn>
+                <TableColumn @bind-Field=context.Summary Sortable>
+                    <Template Context="item">
+                        @item.Value.Category
+                    </Template>
+                    <FilterTemplate>
+                        <CustomerFilter />
+                    </FilterTemplate>
+                </TableColumn>
+            </TableColumns>
+        </Table>
+    </StackItem>
+    <StackItem >
+        <Button class="my-10" OnClick="OnClick" IsBlock >显示数据</Button>
+    </StackItem>
+    <StackItem >
+        <EditorForm Model="_order" ItemsPerRow="1" LabelAlign="Alignment.Right" >
+            <FieldItems >
+                <EditorItem @bind-Field=context.Categories  Text="分类">
+                    <EditTemplate Context="item">
+                        <MultiSelect DisplayText="分类" @bind-Value=context.Categories />
+                    </EditTemplate>
+                </EditorItem>
+            </FieldItems>
+        </EditorForm>
+    </StackItem>
+</Stack>
 
 
-<Table AutoGenerateColumns TItem="Order" OnQueryAsync="OnQueryAsync">
-    <TableColumns >
-        <TableColumn @bind-Field=context.Summary Sortable  >
-            <Template Context="item" >
-                @item.Value.Category
-            </Template>
-            <FilterTemplate >
-                <CustomerFilter />
-            </FilterTemplate>
-        </TableColumn>
-    </TableColumns>
-</Table>
+
+
 
 @code
 {
+
+
+    void OnClick()
+    {
+        var str = string.Join(',', _order.Categories);
+
+        _MessageService.Show(new MessageOption(){Content=str, ShowShadow=true});
+
+    }
+
+
+    Order _order = new Order();
+
     private Task<QueryData<Order>> OnQueryAsync(QueryPageOptions options)
     {
 
@@ -125,14 +171,23 @@
         [AutoGenerateColumn(Ignore =true)]
         public int Id { get; set; }
 
-        [AutoGenerateColumn(Order =10, Text = "编码",Sortable =true,Width =100)]
+        [AutoGenerateColumn(Order =10, Text = "编码",Sortable =true)]
         public int Number { get; set; }
 
         [AutoGenerateColumn(Text = "概要")]
         public Summary  Summary { get; set; }
 
-        [AutoGenerateColumn(Order = 20, Text = "备注", Sortable = true)]
+        [AutoGenerateColumn(Order = 20, Text = "分类", Sortable = true )]
+        public List<SummaryCategory> Categories { get; set; }
+
+        [AutoGenerateColumn(Order = 30, Text = "备注", Sortable = true)]
         public string Notes { get; set; }
+
+        public Order()
+        {
+            Categories = new List<SummaryCategory>();
+        }
+
     }
 
 
@@ -140,7 +195,7 @@
     {
         [Description("低")]
         Low,
-        [Description("高")]
+        [Description("中")]
         Middle,
         [Description("高")]
         High
