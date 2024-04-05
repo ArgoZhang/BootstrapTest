@@ -8,7 +8,6 @@
                 <TableColumn @bind-Field=context.Categories Text="分类">
                     <EditTemplate Context="item">
                         <div class="col-12" >
-
                         <MultiSelect DisplayText="分类" @bind-Value=context.Categories />
                         </div>
                     </EditTemplate>
@@ -16,13 +15,20 @@
                         @string.Join(',',context.Categories)
                     </Template>
                 </TableColumn>
-                <TableColumn @bind-Field=context.Summary Sortable>
+                <TableColumn @bind-Field=context.Summary Sortable Text="概要">
                     <Template Context="item">
                         @item.Value.Category
                     </Template>
                     <FilterTemplate>
                         <CustomerFilter />
                     </FilterTemplate>
+                </TableColumn>
+
+                <TableColumn @bind-Field=context.Summary.Id Sortable Text="概要主键">
+                    <Template Context="item">
+                        @item.Value
+                    </Template>
+                  
                 </TableColumn>
             </TableColumns>
         </Table>
@@ -186,6 +192,7 @@
         public Order()
         {
             Categories = new List<SummaryCategory>();
+            Summary = new Summary();
         }
 
     }
